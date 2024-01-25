@@ -7,6 +7,9 @@ import myblog.myblog11.repository.PostRepository;
 import myblog.myblog11.service.PostService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class PostServiceImpl implements PostService {
     private PostRepository repository;
@@ -15,17 +18,9 @@ public class PostServiceImpl implements PostService {
     }
     @Override
     public PostDto createRegistration(PostDto postDto) {
-        Post post = new Post();
-        post.setName(postDto.getName());
-        post.setEmail(postDto.getEmail());
-        post.setMobile(postDto.getMobile());
+        Post post = mapToEntity(postDto);
         Post spost = repository.save(post);
-
-        PostDto dto = new PostDto();
-        dto.setId(spost.getId());
-        dto.setName(spost.getName());
-        dto.setEmail(spost.getEmail());
-        dto.setMobile(spost.getMobile());
+        PostDto dto = mapToDto(spost);
         return dto;
     }
 
@@ -40,5 +35,28 @@ public class PostServiceImpl implements PostService {
         dto.setEmail(post.getEmail());
         dto.setMobile(post.getMobile());
         return dto;
+    }
+
+    @Override
+    public List<PostDto> getAllPosts() {
+        List<Post> posts = repository.findAll();
+        List<PostDto> dtos = posts.stream().map(post -> mapToDto(post)).collect(Collectors.toList());
+        return dtos;
+    }
+
+    PostDto mapToDto(Post post){
+        PostDto dto = new PostDto();
+        dto.setId(post.getId());
+        dto.setName(post.getName());
+        dto.setEmail(post.getEmail());
+        dto.setMobile(post.getMobile());
+        return dto;
+    }
+    Post mapToEntity(PostDto dto){
+        Post post = new Post();
+        post.setName(dto.getName());
+        post.setEmail(dto.getEmail());
+        post.setMobile(dto.getMobile());
+        return post;
     }
 }
