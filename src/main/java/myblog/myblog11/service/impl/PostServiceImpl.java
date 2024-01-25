@@ -1,6 +1,7 @@
 package myblog.myblog11.service.impl;
 
 import myblog.myblog11.entity.Post;
+import myblog.myblog11.exception.ResourceNotFoundException;
 import myblog.myblog11.payLoad.PostDto;
 import myblog.myblog11.repository.PostRepository;
 import myblog.myblog11.service.PostService;
@@ -25,6 +26,19 @@ public class PostServiceImpl implements PostService {
         dto.setName(spost.getName());
         dto.setEmail(spost.getEmail());
         dto.setMobile(spost.getMobile());
+        return dto;
+    }
+
+    @Override
+    public PostDto getRegistrationById(long id) {
+        Post post = repository.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException("Registration is not found with id=" +id)
+        );
+        PostDto dto = new PostDto();
+        dto.setId(post.getId());
+        dto.setName(post.getName());
+        dto.setEmail(post.getEmail());
+        dto.setMobile(post.getMobile());
         return dto;
     }
 }
