@@ -27,10 +27,13 @@ public class PostController {
         PostDto dtoid = service.getRegistrationById(id);
         return new ResponseEntity<>(dtoid,HttpStatus.ACCEPTED);
     }
-    //      http://localhost:8080/rest/api/getall
+    //      http://localhost:8080/rest/api/getall?pageNo=0&pageSIze=3
     @GetMapping("getall")
-    public List<PostDto> getAllPosts(){
-        List<PostDto> postDtos = service.getAllPosts();
+    public List<PostDto> getAllPosts(
+            @RequestParam(name= "pageNo", required = false,defaultValue = "0") int pageNO,
+            @RequestParam(name="pageSize",required = false,defaultValue = "3") int pageSize
+    ){
+        List<PostDto> postDtos = service.getAllPosts(pageNO,pageSize);
         return postDtos;
     }
 }
